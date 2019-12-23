@@ -146,7 +146,14 @@ See LICENSE file.
                                     rendered="#{loginController.loggedInAsAdmin and resources.EnabledConnectorAndConnectionsFunctionality}"
                                     icon="ui-icon-connector"
                                     styleClass="#{fn:startsWith(view.viewId, '/views/connectorType/') ? 'activeMenuItem' : ''} "
-                                    action="#{connectorTypeController.prepareListFromViewPath('/views/connectorType')}"/>                        
+                                    action="#{connectorTypeController.prepareListFromViewPath('/views/connectorType')}"/>
+                            
+                            <p:menuitem value="Managed Names"
+                                    rendered="#{loginController.loggedInAsAdmin and resources.EnabledNamingFunctionality}"
+                                    icon="ui-icon-name"
+                                    styleClass="#{fn:startsWith(view.viewId, '/views/itemDomainManagedName/') ? 'activeMenuItem' : ''} "
+                                    action="#{itemDomainManagedNameController.prepareListFromViewPath('/views/itemDomainManagedName')}"/>                        
+
                         </p:submenu>                                                                        
                         
                         <p:menuitem value="Settings"

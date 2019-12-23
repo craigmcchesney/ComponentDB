@@ -767,6 +767,14 @@ h2 {
     background-size: contain;     
 }
 
+.ui-icon-name {
+    /* Credit: https://www.iconfinder.com/icons/3045434/badge_card_identity_name_tag_office_person_photo_icon */
+    background-image: url(../../resources/images/name-tag.svg) !important;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;     
+}
+
 .ui-icon-connector {
     /* Credit: https://www.iconfinder.com/icons/4801292/connector_electrical_in_plug_power_icon */
     background-image: url(../../resources/images/connector.svg) !important;
