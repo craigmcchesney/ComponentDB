@@ -13,7 +13,8 @@ public enum ItemDomainName {
         machineDesign("Machine Design"),
         cableCatalog("Cable Catalog"),
         cableInventory("Cable Inventory"), 
-        cableDesign("Cable Design"); 
+        cableDesign("Cable Design"),
+        managedName("Managed Name"); 
         
         public final static int LOCATION_ID = 1; 
         public final static int CATALOG_ID = 2; 
@@ -24,6 +25,7 @@ public enum ItemDomainName {
         public final static int CABLE_CATALOG_ID = 7; 
         public final static int CABLE_INVENTORY_ID = 8; 
         public final static int CABLE_DESIGN_ID = 9; 
+        public final static int MANAGED_NAME_ID = 10; 
 
         private String value;
 
