@@ -781,6 +781,19 @@ class ItemDbApi(CdbDbApi):
         dbItems = self.itemHandler.getParentItems(session, itemId)
         return self.toCdbObjectList(dbItems)
 
+    @CdbDbApi.executeQuery
+    def getNamesByType(self, typeId, **kwargs):
+        """
+        Fetches a list of names ordered by type.
+
+        :param typeId:
+        :param kwargs:
+        :return:
+        """
+        session = kwargs['session']
+        names = self.itemHandler.getNamesByType(session, typeId)
+        return names
+
 
 #######################################################################
 # Testing.

@@ -287,6 +287,51 @@ class ItemRouteDescriptor:
             },
 
 
+            # Get all names
+            {
+                'name': 'getNames',
+                'path': '%s/items/domain/name' % contextRoot,
+                'controller': itemController,
+                'action': 'getNames',
+                'method': ['GET']
+            },
+
+            # Get system names
+            {
+                'name': 'getNamesSystem',
+                'path': '%s/items/domain/name/type/system' % contextRoot,
+                'controller': itemController,
+                'action': 'getNamesSystem',
+                'method': ['GET']
+            },
+
+            # Get subsystem names
+            {
+                'name': 'getNamesSubsystem',
+                'path': '%s/items/domain/name/type/subsystem' % contextRoot,
+                'controller': itemController,
+                'action': 'getNamesSubsystem',
+                'method': ['GET']
+            },
+
+            # Get device names
+            {
+                'name': 'getNamesDevice',
+                'path': '%s/items/domain/name/type/device' % contextRoot,
+                'controller': itemController,
+                'action': 'getNamesDevice',
+                'method': ['GET']
+            },
+
+            # Get subsystem names
+            {
+                'name': 'getNamesSignal',
+                'path': '%s/items/domain/name/type/signal' % contextRoot,
+                'controller': itemController,
+                'action': 'getNamesSignal',
+                'method': ['GET']
+            },
+
         ]
 
         return routes

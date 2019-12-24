@@ -23,6 +23,7 @@ class ItemControllerImpl(CdbObjectManager):
     CATALOG_ITEM_DOMAIN_NAME = "Catalog"
     INVENTORY_ITEM_DOMAIN_NAME = "Inventory"
     LOCATION_ITEM_DOMAIN_NAME = "LOCATION"
+    MANAGED_NAME_DOMAIN_NAME = "Managed Name"
 
     def __init__(self):
         CdbObjectManager.__init__(self)
@@ -198,4 +199,11 @@ class ItemControllerImpl(CdbObjectManager):
     def updateInventoryItemStatus(self, itemId, statusName, enteredByUserId):
         return self.itemDbApi.updateInventoryItemStatus(itemId, statusName, enteredByUserId)
 
+#    def getNames(self):
+#        return self.itemDbApi.getItemsOfDomain(self.MANAGED_NAME_DOMAIN_NAME)
 
+    def getNames(self):
+        return self.itemDbApi.getNamesByType(typeId="")
+
+    def getNamesByType(self, typeId):
+        return self.itemDbApi.getNamesByType(typeId=typeId)

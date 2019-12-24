@@ -178,5 +178,42 @@ class ItemController(CdbController):
         response = self.itemControllerImpl.getAvailableInventoryItemStatuses()
         return self.listToJson(response)
 
+    def namesListToJson(self, names):
+        namesList = []
+        for name in names:
+            nameDict = {}
+            nameDict['name'] = name[0]
+            nameDict['type'] = name[1]
+            nameDict['desc'] = name[2]
+            namesList.append(nameDict)
+        return self.toJson(namesList)
 
+    @cherrypy.expose
+    @CdbController.execute
+    def getNames(self):
+        names = self.itemControllerImpl.getNames()
+        return self.namesListToJson(names)
 
+    @cherrypy.expose
+    @CdbController.execute
+    def getNamesSystem(self):
+        names = self.itemControllerImpl.getNamesByType("System")
+        return self.namesListToJson(names)
+
+    @cherrypy.expose
+    @CdbController.execute
+    def getNamesSubsystem(self):
+        names = self.itemControllerImpl.getNamesByType("Subsystem")
+        return self.namesListToJson(names)
+
+    @cherrypy.expose
+    @CdbController.execute
+    def getNamesDevice(self):
+        names = self.itemControllerImpl.getNamesByType("Device Type")
+        return self.namesListToJson(names)
+
+    @cherrypy.expose
+    @CdbController.execute
+    def getNamesSignal(self):
+        names = self.itemControllerImpl.getNamesByType("Signal")
+        return self.namesListToJson(names)
