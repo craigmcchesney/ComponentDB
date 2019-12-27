@@ -10,6 +10,6 @@ INSERT INTO `domain` VALUES
 (7,'Cable Catalog', 'Item domain for managing the cable catalog items', NULL, NULL, NULL, 'Technical System'),
 (8,'Cable Inventory', 'Item domain for managing cable inventory items', NULL, NULL, NULL, NULL),
 (9,'Cable Design', 'Item domain for managing cable design items', 'Alternate Name', 'UUID', NULL, NULL),
-(10,'Managed Name','Item Domain for managing names.', NULL, NULL, 'Type', NULL);
+(10,'Managed Name','Item Domain for managing names.', NULL, NULL, NULL, NULL);
 /*!40000 ALTER TABLE `domain` ENABLE KEYS */;
 UNLOCK TABLES;

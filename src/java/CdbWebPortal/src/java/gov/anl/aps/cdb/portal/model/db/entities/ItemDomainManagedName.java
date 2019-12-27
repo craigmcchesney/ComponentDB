@@ -18,7 +18,7 @@ public class ItemDomainManagedName extends Item {
 
     @Override
     public Item createInstance() {
-        return new ItemDomainCableInventory(); 
+        return new ItemDomainManagedName(); 
     }
 
 }

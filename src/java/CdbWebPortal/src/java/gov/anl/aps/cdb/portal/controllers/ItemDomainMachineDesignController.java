@@ -8,6 +8,7 @@ import gov.anl.aps.cdb.portal.controllers.extensions.CableWizard;
 import gov.anl.aps.cdb.common.exceptions.CdbException;
 import gov.anl.aps.cdb.portal.constants.EntityTypeName;
 import gov.anl.aps.cdb.portal.constants.ItemDomainName;
+import gov.anl.aps.cdb.portal.controllers.ItemDomainManagedNameController.ValidateInfo;
 import gov.anl.aps.cdb.portal.controllers.extensions.BundleWizard;
 import gov.anl.aps.cdb.portal.controllers.extensions.CircuitWizard;
 import gov.anl.aps.cdb.portal.controllers.settings.ItemDomainMachineDesignSettings;
@@ -1623,6 +1624,15 @@ public class ItemDomainMachineDesignController
     @Override
     public void beforeValidateItemElement() throws CloneNotSupportedException, CdbException {
         super.beforeValidateItemElement();
+        
+        if (displayAddMDPlaceholderListConfigurationPanel) {
+            ValidateInfo validInfo = ItemDomainManagedNameController.getInstance().
+                    validateDeviceName(currentEditItemElement.getContainedItem().getName());
+            if (!validInfo.valid) {
+                throw new CdbException("Invalid device name: " + validInfo.message);
+            }
+        }
+        
         if (createCatalogElement) {
             originalForElement = currentEditItemElement.getContainedItem();
             if (inventoryForElement != null) {
