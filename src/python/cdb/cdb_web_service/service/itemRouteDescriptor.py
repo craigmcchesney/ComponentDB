@@ -286,7 +286,6 @@ class ItemRouteDescriptor:
                 'method': ['POST']
             },
 
-
             # Get all names
             {
                 'name': 'getNames',
@@ -299,7 +298,7 @@ class ItemRouteDescriptor:
             # Get system names
             {
                 'name': 'getNamesSystem',
-                'path': '%s/items/domain/name/type/system' % contextRoot,
+                'path': '%s/items/domain/name/system' % contextRoot,
                 'controller': itemController,
                 'action': 'getNamesSystem',
                 'method': ['GET']
@@ -308,7 +307,7 @@ class ItemRouteDescriptor:
             # Get subsystem names
             {
                 'name': 'getNamesSubsystem',
-                'path': '%s/items/domain/name/type/subsystem' % contextRoot,
+                'path': '%s/items/domain/name/subsystem' % contextRoot,
                 'controller': itemController,
                 'action': 'getNamesSubsystem',
                 'method': ['GET']
@@ -317,7 +316,7 @@ class ItemRouteDescriptor:
             # Get device names
             {
                 'name': 'getNamesDevice',
-                'path': '%s/items/domain/name/type/device' % contextRoot,
+                'path': '%s/items/domain/name/device' % contextRoot,
                 'controller': itemController,
                 'action': 'getNamesDevice',
                 'method': ['GET']
@@ -326,7 +325,7 @@ class ItemRouteDescriptor:
             # Get subsystem names
             {
                 'name': 'getNamesSignal',
-                'path': '%s/items/domain/name/type/signal' % contextRoot,
+                'path': '%s/items/domain/name/signal' % contextRoot,
                 'controller': itemController,
                 'action': 'getNamesSignal',
                 'method': ['GET']

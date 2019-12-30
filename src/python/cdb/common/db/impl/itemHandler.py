@@ -323,28 +323,6 @@ class ItemHandler(CdbDbEntityHandler):
             raise ObjectNotFound("No %ss derived from item id %s found." % (entityDisplayName, derivedItemId))
 
 
-    def getNamesByType(self, session, nameType):
-        domainName = "Managed Name"
-        try:
-            query = session.query(Item)\
-                           .join(ItemElement, ItemElement.parent_item_id==Item.id)\
-                           .join(Domain)\
-                           .join(ItemItemType)\
-                           .join(ItemType)\
-                           .filter(Domain.name==domainName)\
-                           .with_entities(Item.name, ItemType.name, ItemElement.description)\
-                           .order_by(ItemType.name)\
-                           .order_by(Item.name)
-
-            if (nameType != ""):
-                query = query.filter(ItemType.name==nameType)
-
-            dbItems = query.all()
-            return dbItems
-
-        except NoResultFound, ex:
-            raise ObjectNotFound("No %ss with domain %s found." % (entityDisplayName, domainName))
-
     def getItemsWithPropertyTypeName(self, session, propertyTypeName, itemDomainName = None, itemDerivedFromItemId = None, propertyValueMatch = None):
         entityDisplayName = self._getEntityDisplayName(Item)
         try:
@@ -831,8 +809,24 @@ class ItemHandler(CdbDbEntityHandler):
         dbItems = query.all()
         return dbItems
 
+    def getNamesByType(self, session, nameType):
+        domainName = "Managed Name"
+        try:
+            query = session.query(Item)\
+                           .join(ItemElement, ItemElement.parent_item_id==Item.id)\
+                           .join(Domain)\
+                           .join(ItemItemCategory)\
+                           .join(ItemCategory)\
+                           .filter(Domain.name==domainName)\
+                           .with_entities(Item.name, ItemCategory.name, ItemElement.description)\
+                           .order_by(ItemCategory.name)\
+                           .order_by(Item.name)
 
+            if (nameType != ""):
+                query = query.filter(ItemCategory.name==nameType)
 
+            dbItems = query.all()
+            return dbItems
 
-
-
+        except NoResultFound, ex:
+            raise ObjectNotFound("No %ss with domain %s found." % (entityDisplayName, domainName))
