@@ -5,6 +5,7 @@
 package gov.anl.aps.cdb.portal.controllers;
 
 import gov.anl.aps.cdb.portal.constants.ItemDomainName;
+import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperCableCatalog;
 import gov.anl.aps.cdb.portal.controllers.extensions.ItemMultiEditController;
 import gov.anl.aps.cdb.portal.controllers.extensions.ItemMultiEditDomainCableCatalogController;
 import gov.anl.aps.cdb.portal.controllers.settings.ItemDomainCableCatalogSettings;
@@ -25,6 +26,8 @@ public class ItemDomainCableCatalogController extends ItemDomainCatalogBaseContr
     
     public static final String CONTROLLER_NAMED = "itemDomainCableCatalogController";
     
+    protected ImportHelperCableCatalog importHelper = new ImportHelperCableCatalog();
+    
     @EJB
     ItemDomainCableCatalogFacade itemDomainCableCatalogFacade; 
     
@@ -40,8 +43,9 @@ public class ItemDomainCableCatalogController extends ItemDomainCatalogBaseContr
     /**
      * Prepares import wizard.
      */
-    public String prepareWizardImport() {        
-        ItemDomainImportWizard.getInstance().reset();
+    public String prepareWizardImport() {   
+        importHelper.reset();
+        ItemDomainImportWizard.getInstance().registerHelper(importHelper);
         return "/views/itemDomainCableCatalog/import?faces-redirect=true";
     }
 
