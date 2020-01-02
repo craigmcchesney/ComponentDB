@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright (c) UChicago Argonne, LLC. All rights reserved.
+See LICENSE file.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../item/private/templates/itemListActionButtonsTemplate.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name ="additonalListButtons">
+        <p:menuButton value="Import"
+                      icon="ui-icon-plus"
+                      rendered="#{loginController.loggedInAsAdmin}">
+            
+            <p:menuitem value="Devices"
+                        action="#{itemDomainManagedNameController.prepareWizardImportDevices()}"
+                        icon="ui-icon-name"
+                        styleClass="actionButtonLeft"/>
+
+            <p:menuitem value="Signals"
+                        action="#{itemDomainManagedNameController.prepareWizardImportSignals()}"
+                        icon="ui-icon-name"
+                        styleClass="actionButtonLeft"/>
+
+        </p:menuButton>
+        
+        <p:menuButton value="Validate"
+                      icon="ui-icon-name"
+                      rendered="#{loginController.loggedInAsAdmin}">
+            
+            <p:menuitem value="Devices"
+                        action="#{itemDomainManagedNameController.prepareWizardValidateDevices()}"
+                        icon="ui-icon-name"
+                        styleClass="actionButtonLeft"/>
+
+            <p:menuitem value="Signals"
+                        action="#{itemDomainManagedNameController.prepareWizardValidateSignals()}"
+                        icon="ui-icon-name"
+                        styleClass="actionButtonLeft"/>
+
+        </p:menuButton>
+    </ui:define>
+
+</ui:composition>

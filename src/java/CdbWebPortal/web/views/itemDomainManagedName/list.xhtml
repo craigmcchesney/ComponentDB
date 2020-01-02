@@ -16,4 +16,8 @@ See LICENSE file.
         <f:viewAction action="#{itemDomainManagedNameController.processPreRenderList()}"/>
     </f:metadata>
     
+    <ui:define name ="listActionButtons">
+        <ui:include src="private/itemDomainManagedNameListActionButtons.xhtml"/>
+    </ui:define>
+        
 </ui:composition>
