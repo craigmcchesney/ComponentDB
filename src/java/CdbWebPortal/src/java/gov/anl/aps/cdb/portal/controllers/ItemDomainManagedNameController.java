@@ -5,9 +5,10 @@
 package gov.anl.aps.cdb.portal.controllers;
 
 import gov.anl.aps.cdb.portal.constants.ItemDomainName;
+import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameImportDevices;
+import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameImportSignals;
 import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameValidateDevices;
 import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameValidateSignals;
-import gov.anl.aps.cdb.portal.controllers.extensions.ItemMultiEditController;
 import gov.anl.aps.cdb.portal.controllers.settings.ItemDomainManagedNameSettings;
 import gov.anl.aps.cdb.portal.model.db.beans.ItemDomainManagedNameFacade;
 import gov.anl.aps.cdb.portal.model.db.entities.ItemDomainManagedName;
@@ -27,52 +28,56 @@ import javax.inject.Named;
 public class ItemDomainManagedNameController extends ItemController<ItemDomainManagedName, ItemDomainManagedNameFacade, ItemDomainManagedNameSettings> {
 
     public class NameParseInfo {
+
         public boolean valid = false;
         public String message = "";
         public SystemNameInfo systemNameInfo;
         public DeviceNameInfo deviceNameInfo;
         public SignalNameInfo signalNameInfo;
-        
+
         public String generateValidDeviceNameMessage() {
             String subsystemString = "";
             for (SubsystemNameInfo info : systemNameInfo.subsystems) {
-                subsystemString = subsystemString +
-                        " subsystem: " + info.name + 
-                        " instance: " + info.instance;
+                subsystemString = subsystemString
+                        + " subsystem: " + info.name
+                        + " instance: " + info.instance;
             }
-            return "valid system: " + systemNameInfo.name +
-                " instance: " + systemNameInfo.instance +
-                subsystemString +
-                " device: " + deviceNameInfo.name +
-                " instance: " + deviceNameInfo.instance;
+            return "valid system: " + systemNameInfo.name
+                    + " instance: " + systemNameInfo.instance
+                    + subsystemString
+                    + " device: " + deviceNameInfo.name
+                    + " instance: " + deviceNameInfo.instance;
         }
-        
+
         public String generateValidSignalNameMessage() {
             String deviceMessage = generateValidDeviceNameMessage();
-            return deviceMessage +
-                    " signal: " + signalNameInfo.name;
+            return deviceMessage
+                    + " signal: " + signalNameInfo.name;
         }
     }
-    
+
     public class SubsystemNameInfo {
+
         String name = "";
         String instance = "";
-        
+
         public SubsystemNameInfo(String n, String i) {
             name = n;
             instance = i;
         }
     }
-    
+
     public class SystemNameInfo {
+
         public boolean valid = false;
         public String validMessage = "";
         public String name = "";
         public String instance = "";
         public List<SubsystemNameInfo> subsystems = new ArrayList<>();
     }
-    
+
     public class DeviceNameInfo {
+
         public boolean valid = false;
         public String validMessage = "";
         public String name = "";
@@ -80,6 +85,7 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
     }
 
     public class SignalNameInfo {
+
         public boolean valid = false;
         public String validMessage = "";
         public String name = "";
@@ -89,7 +95,9 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
     protected ImportHelperManagedNameValidateDevices importHelperValidateDevices = new ImportHelperManagedNameValidateDevices();
     protected ImportHelperManagedNameValidateSignals importHelperValidateSignals = new ImportHelperManagedNameValidateSignals();
-    
+    protected ImportHelperManagedNameImportDevices importHelperImportDevices = new ImportHelperManagedNameImportDevices();
+    protected ImportHelperManagedNameImportSignals importHelperImportSignals = new ImportHelperManagedNameImportSignals();
+
     @EJB
     ItemDomainManagedNameFacade itemDomainManagedNameFacade;
 
@@ -124,20 +132,18 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
      * Prepares import wizard.
      */
     public String prepareWizardImportDevices() {
-//        importHelperValidateDevices.reset();
-//        ItemDomainImportWizard.getInstance().registerHelper(importHelperValidateDevices);
-//        return "/views/itemDomainCableCatalog/validateDevices?faces-redirect=true";
-        return "";
+        importHelperImportDevices.reset();
+        ItemDomainImportWizard.getInstance().registerHelper(importHelperImportDevices);
+        return "/views/itemDomainManagedName/importDevices?faces-redirect=true";
     }
 
     /**
      * Prepares import wizard.
      */
     public String prepareWizardImportSignals() {
-//        importHelperValidateDevices.reset();
-//        ItemDomainImportWizard.getInstance().registerHelper(importHelperValidateDevices);
-//        return "/views/itemDomainCableCatalog/validateDevices?faces-redirect=true";
-        return "";
+        importHelperImportSignals.reset();
+        ItemDomainImportWizard.getInstance().registerHelper(importHelperImportSignals);
+        return "/views/itemDomainManagedName/importSignals?faces-redirect=true";
     }
 
     @Override
@@ -299,11 +305,11 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
         return instanceNumber;
     }
-    
+
     protected SystemNameInfo parseSystemToken(String systemToken, List<String> dbSystemNames, List<String> dbSubsystemNames) {
-        
+
         SystemNameInfo info = new SystemNameInfo();
-        
+
         String systemName = "";
         String systemInstance = "";
         int parseIndex = 0;
@@ -367,14 +373,14 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         } else {
             info.valid = true;
         }
-        
+
         return info;
     }
-    
+
     protected DeviceNameInfo parseDeviceToken(String deviceToken, List<String> dbDeviceNames) {
-        
+
         DeviceNameInfo info = new DeviceNameInfo();
-        
+
         // match device name
         String deviceName = "";
         String deviceInstance = "";
@@ -414,9 +420,9 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
     }
 
     protected SignalNameInfo parseSignalToken(String signalToken, List<String> dbSignalNames) {
-        
+
         SignalNameInfo info = new SignalNameInfo();
-        
+
         // match signal name
         String signalName = "";
         int parseIndex = 0;
@@ -446,14 +452,14 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
     }
 
     protected NameParseInfo parseName(String name, boolean parseSignal) {
-        
+
         NameParseInfo info = new NameParseInfo();
 
         List<String> dbSystemNames = getEntityDbFacade().getSystemNames();
         List<String> dbSubsystemNames = getEntityDbFacade().getSubsystemNames();
         List<String> dbDeviceNames = getEntityDbFacade().getDeviceNames();
         List<String> dbSignalNames = new ArrayList<>();
-        
+
         String[] tokens = name.split(":");
 
         if (parseSignal) {
@@ -478,9 +484,9 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         if (parseSignal) {
             signalToken = tokens[2];
         }
-        
+
         // parse system and subsystem
-        SystemNameInfo systemNameInfo = parseSystemToken(systemToken, dbSystemNames, dbSubsystemNames);        
+        SystemNameInfo systemNameInfo = parseSystemToken(systemToken, dbSystemNames, dbSubsystemNames);
         if (systemNameInfo.valid == false) {
             info.valid = false;
             info.message = systemNameInfo.validMessage;
@@ -490,7 +496,7 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         }
 
         // parse device
-        DeviceNameInfo deviceNameInfo = parseDeviceToken(deviceToken, dbDeviceNames);        
+        DeviceNameInfo deviceNameInfo = parseDeviceToken(deviceToken, dbDeviceNames);
         if (deviceNameInfo.valid == false) {
             info.valid = false;
             info.message = deviceNameInfo.validMessage;
@@ -498,7 +504,7 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         } else {
             info.deviceNameInfo = deviceNameInfo;
         }
-        
+
         // optionally, parse signal
         if (parseSignal) {
             SignalNameInfo signalNameInfo = parseSignalToken(signalToken, dbSignalNames);
@@ -519,18 +525,28 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         }
 
         System.out.println(msg);
-        
+
         info.valid = true;
         info.message = msg;
         return info;
     }
 
-    public NameParseInfo parseDeviceName(String name) {        
-        return parseName(name, false);        
+    public NameParseInfo parseDeviceName(String name) {
+        return parseName(name, false);
     }
-    
-    public NameParseInfo parseSignalName(String name) {        
-        return parseName(name, true);        
+
+    public NameParseInfo parseSignalName(String name) {
+        return parseName(name, true);
     }
-    
+
+    public boolean checkDeviceTypeExists(String deviceType) {
+        List<String> dbDeviceNames = getEntityDbFacade().getDeviceNames();
+        return dbDeviceNames.contains(deviceType);
+    }
+
+    public boolean checkSignalExists(String signal) {
+        List<String> dbSignalNames = getEntityDbFacade().getSignalNames();
+        return dbSignalNames.contains(signal);
+    }
+
 }
