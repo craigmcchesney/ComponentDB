@@ -5,6 +5,7 @@
 package gov.anl.aps.cdb.portal.controllers;
 
 import gov.anl.aps.cdb.portal.constants.ItemDomainName;
+import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameValidateDevices;
 import gov.anl.aps.cdb.portal.controllers.extensions.ItemMultiEditController;
 import gov.anl.aps.cdb.portal.controllers.settings.ItemDomainManagedNameSettings;
 import gov.anl.aps.cdb.portal.model.db.beans.ItemDomainManagedNameFacade;
@@ -37,6 +38,8 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
     public static final String CONTROLLER_NAMED = "itemDomainManagedNameController";
 
+    protected ImportHelperManagedNameValidateDevices importHelperValidateDevices = new ImportHelperManagedNameValidateDevices();
+    
     @EJB
     ItemDomainManagedNameFacade itemDomainManagedNameFacade;
 
@@ -53,10 +56,9 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
      * Prepares import wizard.
      */
     public String prepareWizardValidateDevices() {
-//        importHelperValidateDevices.reset();
-//        ItemDomainImportWizard.getInstance().registerHelper(importHelperValidateDevices);
-//        return "/views/itemDomainCableCatalog/validateDevices?faces-redirect=true";
-        return "";
+        importHelperValidateDevices.reset();
+        ItemDomainImportWizard.getInstance().registerHelper(importHelperValidateDevices);
+        return "/views/itemDomainManagedName/validateDevices?faces-redirect=true";
     }
 
     /**
@@ -251,13 +253,6 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
     public ValidateInfo validateDeviceName(String name) {
 
-        String systemName = "";
-        String systemInstance = "";
-        List<String> subsystemNames = new ArrayList<>();
-        List<String> subsystemInstances = new ArrayList<>();
-        String deviceName = "";
-        String deviceInstance = "";
-
         String[] tokens = name.split(":");
 
         if ((tokens.length != 2)) {
@@ -267,6 +262,13 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
         String systemToken = tokens[0];
         String deviceToken = tokens[1];
+
+        String systemName = "";
+        String systemInstance = "";
+        List<String> subsystemNames = new ArrayList<>();
+        List<String> subsystemInstances = new ArrayList<>();
+        String deviceName = "";
+        String deviceInstance = "";
 
         List<String> dbSystemNames = getEntityDbFacade().getSystemNames();
         List<String> dbSubsystemNames = getEntityDbFacade().getSubsystemNames();
