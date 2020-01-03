@@ -6,7 +6,7 @@ package gov.anl.aps.cdb.portal.controllers.extensions;
 
 import gov.anl.aps.cdb.portal.controllers.ImportHelperBase;
 import gov.anl.aps.cdb.portal.controllers.ItemDomainManagedNameController;
-import gov.anl.aps.cdb.portal.controllers.ItemDomainManagedNameController.ValidateInfo;
+import gov.anl.aps.cdb.portal.controllers.ItemDomainManagedNameController.NameParseInfo;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -70,7 +70,7 @@ public class ImportHelperManagedNameValidateDevices extends ImportHelperBase {
             validString = "name is not a string";
         } else {
             name = cell.getStringCellValue();
-            ValidateInfo info = ItemDomainManagedNameController.getInstance().validateDeviceName(name);
+            NameParseInfo info = ItemDomainManagedNameController.getInstance().parseDeviceName(name);
             isValid = info.valid;
             validString = info.message;
         }

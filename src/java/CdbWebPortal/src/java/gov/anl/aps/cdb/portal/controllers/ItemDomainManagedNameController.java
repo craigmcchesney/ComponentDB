@@ -25,15 +25,50 @@ import javax.inject.Named;
 @SessionScoped
 public class ItemDomainManagedNameController extends ItemController<ItemDomainManagedName, ItemDomainManagedNameFacade, ItemDomainManagedNameSettings> {
 
-    public class ValidateInfo {
-
+    public class NameParseInfo {
         public boolean valid = false;
         public String message = "";
-
-        public ValidateInfo(boolean res, String msg) {
-            valid = res;
-            message = msg;
+        public SystemNameInfo systemNameInfo;
+        public DeviceNameInfo deviceNameInfo;
+        
+        public String generateValidMessage() {
+            String subsystemString = "";
+            for (SubsystemNameInfo info : systemNameInfo.subsystems) {
+                subsystemString = subsystemString +
+                        " subsystem: " + info.name + 
+                        " instance: " + info.instance;
+            }
+            return "valid system: " + systemNameInfo.name +
+                " instance: " + systemNameInfo.instance +
+                subsystemString +
+                " device: " + deviceNameInfo.name +
+                " instance: " + deviceNameInfo.instance;
         }
+    }
+    
+    public class SubsystemNameInfo {
+        String name = "";
+        String instance = "";
+        
+        public SubsystemNameInfo(String n, String i) {
+            name = n;
+            instance = i;
+        }
+    }
+    
+    public class SystemNameInfo {
+        public boolean valid = false;
+        public String validMessage = "";
+        public String name = "";
+        public String instance = "";
+        public List<SubsystemNameInfo> subsystems = new ArrayList<>();
+    }
+    
+    public class DeviceNameInfo {
+        public boolean valid = false;
+        public String validMessage = "";
+        public String name = "";
+        public String instance = "";
     }
 
     public static final String CONTROLLER_NAMED = "itemDomainManagedNameController";
@@ -250,38 +285,24 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
         return instanceNumber;
     }
-
-    public ValidateInfo validateDeviceName(String name) {
-
-        String[] tokens = name.split(":");
-
-        if ((tokens.length != 2)) {
-            return new ValidateInfo(false,
-                    "device name must include 2 parts separated by a colon");
-        }
-
-        String systemToken = tokens[0];
-        String deviceToken = tokens[1];
-
+    
+    protected SystemNameInfo parseSystemToken(String systemToken, List<String> dbSystemNames, List<String> dbSubsystemNames) {
+        
+        SystemNameInfo info = new SystemNameInfo();
+        
         String systemName = "";
         String systemInstance = "";
-        List<String> subsystemNames = new ArrayList<>();
-        List<String> subsystemInstances = new ArrayList<>();
-        String deviceName = "";
-        String deviceInstance = "";
-
-        List<String> dbSystemNames = getEntityDbFacade().getSystemNames();
-        List<String> dbSubsystemNames = getEntityDbFacade().getSubsystemNames();
-        List<String> dbDeviceNames = getEntityDbFacade().getDeviceNames();
-
         int parseIndex = 0;
 
         // match system name
         systemName = matchNameFromList(systemToken, parseIndex, dbSystemNames);
         if (systemName == "") {
             // no match on system
-            return new ValidateInfo(false, "missing or invalid system: " + systemToken);
+            info.valid = false;
+            info.validMessage = "missing or invalid system: " + systemToken;
+            return info;
         } else {
+            info.name = systemName;
             parseIndex = parseIndex + systemName.length();
         }
 
@@ -290,6 +311,7 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         // match system instance if present
         systemInstance = matchInstanceNumber(systemToken, parseIndex);
         if (systemInstance != "") {
+            info.instance = systemInstance;
             parseIndex = parseIndex + systemInstance.length();
         }
 
@@ -302,42 +324,55 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
             String subsystemName = matchNameFromList(systemToken, parseIndex, dbSubsystemNames);
             if (subsystemName == "") {
                 // make sure we have at least one subsystem name
-                if (subsystemNames.size() == 0) {
-                    return new ValidateInfo(false, "missing or invalid subsystem: "
-                            + systemToken.substring(parseIndex));
+                if (info.subsystems.size() == 0) {
+                    info.valid = false;
+                    info.validMessage = "missing or invalid subsystem: "
+                            + systemToken.substring(parseIndex);
+                    return info;
                 } else {
                     break;
                 }
             } else {
-                // add subsystem name to list
-                subsystemNames.add(subsystemName);
+                // save subsystem name and instance if present, and update parseIndex
                 parseIndex = parseIndex + subsystemName.length();
-
-                System.out.println("subsystem: " + subsystemName + " index: " + parseIndex);
-
                 // match subsystem instance if present
                 String subsystemInstance = matchInstanceNumber(systemToken, parseIndex);
-                // add subsystem instance to list, even if empty so list indexes match
-                subsystemInstances.add(subsystemInstance);
+                info.subsystems.add(new SubsystemNameInfo(subsystemName, subsystemInstance));
                 if (subsystemInstance != "") {
                     parseIndex = parseIndex + subsystemInstance.length();
                 }
+                System.out.println("subsystem: " + subsystemName + " instance: " + subsystemInstance + " index: " + parseIndex);
             }
         }
 
         // make sure all system token characters processed
         if (parseIndex < systemToken.length()) {
-            return new ValidateInfo(false, "extra characters after subsystem: "
-                    + systemToken.substring(parseIndex));
+            info.valid = false;
+            info.validMessage = "extra characters after subsystem: "
+                    + systemToken.substring(parseIndex);
+        } else {
+            info.valid = true;
         }
-
-        // now validate device token
-        parseIndex = 0;
+        
+        return info;
+    }
+    
+    protected DeviceNameInfo parseDeviceToken(String deviceToken, List<String> dbDeviceNames) {
+        
+        DeviceNameInfo info = new DeviceNameInfo();
+        
+        // match device name
+        String deviceName = "";
+        String deviceInstance = "";
+        int parseIndex = 0;
         deviceName = matchNameFromList(deviceToken, parseIndex, dbDeviceNames);
         if (deviceName == "") {
             // no match on device
-            return new ValidateInfo(false, "missing or invalid device: " + deviceToken);
+            info.valid = false;
+            info.validMessage = "missing or invalid device: " + deviceToken;
+            return info;
         } else {
+            info.name = deviceName;
             parseIndex = parseIndex + deviceName.length();
         }
 
@@ -346,6 +381,7 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         // match device instance if present
         deviceInstance = matchInstanceNumber(deviceToken, parseIndex);
         if (deviceInstance != "") {
+            info.instance = deviceInstance;
             parseIndex = parseIndex + deviceInstance.length();
         }
 
@@ -353,20 +389,62 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
 
         // make sure all device token characters processed
         if (parseIndex < deviceToken.length()) {
-            return new ValidateInfo(false, "extra characters after device: "
-                    + deviceToken.substring(parseIndex));
+            info.valid = false;
+            info.validMessage = "extra characters after device: "
+                    + deviceToken.substring(parseIndex);
+        } else {
+            info.valid = true;
         }
 
-        String msg = "valid system: " + systemName
-                + " instance: " + systemInstance
-                + " subsystems: " + subsystemNames
-                + " instances: " + subsystemInstances
-                + " device: " + deviceName
-                + " instance: " + deviceInstance;
+        return info;
+    }
+
+    public NameParseInfo parseDeviceName(String name) {
+        
+        NameParseInfo info = new NameParseInfo();
+
+        List<String> dbSystemNames = getEntityDbFacade().getSystemNames();
+        List<String> dbSubsystemNames = getEntityDbFacade().getSubsystemNames();
+        List<String> dbDeviceNames = getEntityDbFacade().getDeviceNames();
+
+        String[] tokens = name.split(":");
+
+        if ((tokens.length != 2)) {
+            info.valid = false;
+            info.message = "device name must include 2 parts separated by a colon";
+            return info;
+        }
+
+        String systemToken = tokens[0];
+        String deviceToken = tokens[1];
+        
+        // parse system and subsystem
+        SystemNameInfo systemNameInfo = parseSystemToken(systemToken, dbSystemNames, dbSubsystemNames);        
+        if (systemNameInfo.valid == false) {
+            info.valid = false;
+            info.message = systemNameInfo.validMessage;
+            return info;
+        } else {
+            info.systemNameInfo = systemNameInfo;
+        }
+
+        // parse device
+        DeviceNameInfo deviceNameInfo = parseDeviceToken(deviceToken, dbDeviceNames);        
+        if (deviceNameInfo.valid == false) {
+            info.valid = false;
+            info.message = deviceNameInfo.validMessage;
+            return info;
+        } else {
+            info.deviceNameInfo = deviceNameInfo;
+        }
+
+        String msg = info.generateValidMessage();
 
         System.out.println(msg);
-
-        return new ValidateInfo(true, msg);
+        
+        info.valid = true;
+        info.message = msg;
+        return info;
     }
 
 }
