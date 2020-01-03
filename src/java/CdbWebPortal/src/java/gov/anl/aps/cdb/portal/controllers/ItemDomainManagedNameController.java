@@ -6,6 +6,7 @@ package gov.anl.aps.cdb.portal.controllers;
 
 import gov.anl.aps.cdb.portal.constants.ItemDomainName;
 import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameValidateDevices;
+import gov.anl.aps.cdb.portal.controllers.extensions.ImportHelperManagedNameValidateSignals;
 import gov.anl.aps.cdb.portal.controllers.extensions.ItemMultiEditController;
 import gov.anl.aps.cdb.portal.controllers.settings.ItemDomainManagedNameSettings;
 import gov.anl.aps.cdb.portal.model.db.beans.ItemDomainManagedNameFacade;
@@ -87,6 +88,7 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
     public static final String CONTROLLER_NAMED = "itemDomainManagedNameController";
 
     protected ImportHelperManagedNameValidateDevices importHelperValidateDevices = new ImportHelperManagedNameValidateDevices();
+    protected ImportHelperManagedNameValidateSignals importHelperValidateSignals = new ImportHelperManagedNameValidateSignals();
     
     @EJB
     ItemDomainManagedNameFacade itemDomainManagedNameFacade;
@@ -113,10 +115,9 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
      * Prepares import wizard.
      */
     public String prepareWizardValidateSignals() {
-//        importHelperValidateDevices.reset();
-//        ItemDomainImportWizard.getInstance().registerHelper(importHelperValidateDevices);
-//        return "/views/itemDomainCableCatalog/validateDevices?faces-redirect=true";
-        return "";
+        importHelperValidateSignals.reset();
+        ItemDomainImportWizard.getInstance().registerHelper(importHelperValidateSignals);
+        return "/views/itemDomainManagedName/validateSignals?faces-redirect=true";
     }
 
     /**
