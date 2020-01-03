@@ -30,8 +30,9 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         public String message = "";
         public SystemNameInfo systemNameInfo;
         public DeviceNameInfo deviceNameInfo;
+        public SignalNameInfo signalNameInfo;
         
-        public String generateValidMessage() {
+        public String generateValidDeviceNameMessage() {
             String subsystemString = "";
             for (SubsystemNameInfo info : systemNameInfo.subsystems) {
                 subsystemString = subsystemString +
@@ -43,6 +44,12 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
                 subsystemString +
                 " device: " + deviceNameInfo.name +
                 " instance: " + deviceNameInfo.instance;
+        }
+        
+        public String generateValidSignalNameMessage() {
+            String deviceMessage = generateValidDeviceNameMessage();
+            return deviceMessage +
+                    " signal: " + signalNameInfo.name;
         }
     }
     
@@ -69,6 +76,12 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         public String validMessage = "";
         public String name = "";
         public String instance = "";
+    }
+
+    public class SignalNameInfo {
+        public boolean valid = false;
+        public String validMessage = "";
+        public String name = "";
     }
 
     public static final String CONTROLLER_NAMED = "itemDomainManagedNameController";
@@ -399,24 +412,71 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         return info;
     }
 
-    public NameParseInfo parseDeviceName(String name) {
+    protected SignalNameInfo parseSignalToken(String signalToken, List<String> dbSignalNames) {
+        
+        SignalNameInfo info = new SignalNameInfo();
+        
+        // match signal name
+        String signalName = "";
+        int parseIndex = 0;
+        signalName = matchNameFromList(signalToken, parseIndex, dbSignalNames);
+        if (signalName == "") {
+            // no match on signal
+            info.valid = false;
+            info.validMessage = "missing or invalid signal: " + signalToken;
+            return info;
+        } else {
+            info.name = signalName;
+            parseIndex = parseIndex + signalName.length();
+        }
+
+        System.out.println("signal: " + signalName + " index: " + parseIndex);
+
+        // make sure all signal token characters processed
+        if (parseIndex < signalToken.length()) {
+            info.valid = false;
+            info.validMessage = "extra characters after signal: "
+                    + signalToken.substring(parseIndex);
+        } else {
+            info.valid = true;
+        }
+
+        return info;
+    }
+
+    protected NameParseInfo parseName(String name, boolean parseSignal) {
         
         NameParseInfo info = new NameParseInfo();
 
         List<String> dbSystemNames = getEntityDbFacade().getSystemNames();
         List<String> dbSubsystemNames = getEntityDbFacade().getSubsystemNames();
         List<String> dbDeviceNames = getEntityDbFacade().getDeviceNames();
-
+        List<String> dbSignalNames = new ArrayList<>();
+        
         String[] tokens = name.split(":");
 
-        if ((tokens.length != 2)) {
-            info.valid = false;
-            info.message = "device name must include 2 parts separated by a colon";
-            return info;
+        if (parseSignal) {
+            dbSignalNames = getEntityDbFacade().getSignalNames();
+            if ((tokens.length != 3)) {
+                info.valid = false;
+                info.message = "signal name must include 3 parts separated by a colon";
+                return info;
+            }
+
+        } else {
+            if ((tokens.length != 2)) {
+                info.valid = false;
+                info.message = "device name must include 2 parts separated by a colon";
+                return info;
+            }
         }
 
         String systemToken = tokens[0];
         String deviceToken = tokens[1];
+        String signalToken = "";
+        if (parseSignal) {
+            signalToken = tokens[2];
+        }
         
         // parse system and subsystem
         SystemNameInfo systemNameInfo = parseSystemToken(systemToken, dbSystemNames, dbSubsystemNames);        
@@ -437,8 +497,25 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         } else {
             info.deviceNameInfo = deviceNameInfo;
         }
+        
+        // optionally, parse signal
+        if (parseSignal) {
+            SignalNameInfo signalNameInfo = parseSignalToken(signalToken, dbSignalNames);
+            if (signalNameInfo.valid == false) {
+                info.valid = false;
+                info.message = signalNameInfo.validMessage;
+                return info;
+            } else {
+                info.signalNameInfo = signalNameInfo;
+            }
+        }
 
-        String msg = info.generateValidMessage();
+        String msg;
+        if (parseSignal) {
+            msg = info.generateValidSignalNameMessage();
+        } else {
+            msg = info.generateValidDeviceNameMessage();
+        }
 
         System.out.println(msg);
         
@@ -447,4 +524,12 @@ public class ItemDomainManagedNameController extends ItemController<ItemDomainMa
         return info;
     }
 
+    public NameParseInfo parseDeviceName(String name) {        
+        return parseName(name, false);        
+    }
+    
+    public NameParseInfo parseSignalName(String name) {        
+        return parseName(name, true);        
+    }
+    
 }
