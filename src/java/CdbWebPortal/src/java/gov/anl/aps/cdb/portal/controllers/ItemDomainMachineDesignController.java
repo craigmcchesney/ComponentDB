@@ -1625,14 +1625,14 @@ public class ItemDomainMachineDesignController
     public void beforeValidateItemElement() throws CloneNotSupportedException, CdbException {
         super.beforeValidateItemElement();
         
-        if (displayAddMDPlaceholderListConfigurationPanel) {
-            NameParseInfo validInfo = ItemDomainManagedNameController.getInstance().
-                    parseDeviceName(currentEditItemElement.getContainedItem().getName());
-            if (!validInfo.valid) {
-                throw new CdbException("Invalid device name: " + validInfo.message);
-            }
-        }
-        
+//        if (displayAddMDPlaceholderListConfigurationPanel) {
+//            NameParseInfo validInfo = ItemDomainManagedNameController.getInstance().
+//                    parseDeviceName(currentEditItemElement.getContainedItem().getName());
+//            if (!validInfo.valid) {
+//                throw new CdbException("Invalid device name: " + validInfo.message);
+//            }
+//        }
+//        
         if (createCatalogElement) {
             originalForElement = currentEditItemElement.getContainedItem();
             if (inventoryForElement != null) {
