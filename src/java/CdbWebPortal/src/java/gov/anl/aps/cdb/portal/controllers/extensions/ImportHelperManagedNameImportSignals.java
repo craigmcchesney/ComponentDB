@@ -51,6 +51,11 @@ public class ImportHelperManagedNameImportSignals extends ImportHelperBase {
     }
     
     @Override
+    protected boolean isValidationOnly() {
+        return false;
+    }
+    
+    @Override
     protected void createColumnModels_() {
         columns.add(new ImportHelperBase.ColumnModel(nameHeader, nameProperty));
         columns.add(new ImportHelperBase.ColumnModel(descriptionHeader, descriptionProperty));
