@@ -39,6 +39,13 @@ public class ImportHelperManagedNameValidateDevices extends ImportHelperBase {
     protected static String nameHeader = "Device Name";
     protected static String nameProperty = "name";
 
+    protected static String completionUrlValue = "/views/itemDomainManagedName/list?faces-redirect=true";
+    
+    @Override
+    protected String getCompletionUrlValue() {
+        return completionUrlValue;
+    }
+    
     @Override
     protected void createColumnModels_() {
         columns.add(new ImportHelperBase.ColumnModel(nameHeader, nameProperty));

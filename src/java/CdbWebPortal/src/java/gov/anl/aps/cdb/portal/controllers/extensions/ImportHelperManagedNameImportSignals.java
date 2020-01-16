@@ -43,6 +43,13 @@ public class ImportHelperManagedNameImportSignals extends ImportHelperBase {
     protected static String descriptionHeader = "Description";
     protected static String descriptionProperty = "description";
 
+    protected static String completionUrlValue = "/views/itemDomainManagedName/list?faces-redirect=true";
+    
+    @Override
+    protected String getCompletionUrlValue() {
+        return completionUrlValue;
+    }
+    
     @Override
     protected void createColumnModels_() {
         columns.add(new ImportHelperBase.ColumnModel(nameHeader, nameProperty));
