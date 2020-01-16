@@ -73,6 +73,12 @@ public abstract class ImportHelperBase {
 
     public abstract void parseRow(Row row);
     
+    protected abstract String getCompletionUrlValue();
+    
+    public String getCompletionUrl() {
+        return getCompletionUrlValue();
+    }
+    
     public ImportHelperBase() {
         createColumnModels();
     }
