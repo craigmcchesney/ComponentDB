@@ -21,7 +21,7 @@ import javax.inject.Named;
 
 /**
  *
- * @author djarosz
+ * @author craig
  */
 @Named(ItemDomainManagedNameController.CONTROLLER_NAMED)
 @SessionScoped
