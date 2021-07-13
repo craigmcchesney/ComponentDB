@@ -1081,8 +1081,7 @@ public abstract class ItemController<
     }
 
     public void saveSourceList() {
-        update();
-        reloadCurrent();
+        update();        
     }
 
     public void deleteSource(ItemSource itemSource) {
@@ -1298,8 +1297,7 @@ public abstract class ItemController<
     }
 
     public void saveItemElementList() {
-        update();
-        reloadCurrent();
+        update();        
     }
 
     public List<ItemDomainEntity> getSelectItemCandidateList() {
@@ -1486,8 +1484,7 @@ public abstract class ItemController<
     }
 
     public void saveItemDerivedFromItemList() {
-        update();
-        reloadCurrent();
+        update();        
     }
 
     public void deleteItemDerivedFromItem(ItemDomainEntity itemDerivedFromItem) {
